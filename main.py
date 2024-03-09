@@ -195,26 +195,27 @@ def decrypt_file(cipher_func, key, input_file, output_file):
 
 # GUI dengan customTkinter
 root = ctk.CTk()
-root.title("Chiper-X-Rahmanz")
+root.title("Chiper GUI")
 root.geometry("1080x1920")
 
 # Pengaturan tema
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
+ctk.set_widget_scaling(0.9) 
 
 # Frame utama
 main_frame = ctk.CTkFrame(root)
 main_frame.pack(pady=20, padx=60, fill="both", expand=True)
 
 # Label judul
-title_label = ctk.CTkLabel(main_frame, text="Cipher GUI", font=ctk.CTkFont(size=24, weight="bold"))
+title_label = ctk.CTkLabel(main_frame, text="CrackStation Lite", font=ctk.CTkFont(size=24, weight="bold", family="Segoe Print"))
 title_label.pack(pady=12, padx=10, anchor="center")
 
 # Frame input
 input_frame = ctk.CTkFrame(main_frame)
 input_frame.pack(pady=20, padx=10)
 
-input_label = ctk.CTkLabel(input_frame, text="Input Text:")
+input_label = ctk.CTkLabel(input_frame, text="Input Text:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 input_label.pack(side="top", pady=5)
 
 input_text = ctk.CTkTextbox(input_frame, width=400, height=100)
@@ -224,7 +225,7 @@ input_text.pack(side="top", pady=5)
 key_frame = ctk.CTkFrame(main_frame)
 key_frame.pack(pady=10, padx=10)
 
-key_label = ctk.CTkLabel(key_frame, text="Kunci:")
+key_label = ctk.CTkLabel(key_frame, text="Kunci:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 key_label.pack(side="left", padx=5)
 
 key_entry = ctk.CTkEntry(key_frame)
@@ -234,7 +235,7 @@ key_entry.pack(side="left", padx=5)
 cipher_frame = ctk.CTkFrame(main_frame)
 cipher_frame.pack(pady=10, padx=10)
 
-cipher_label = ctk.CTkLabel(cipher_frame, text="Pilih Cipher:")
+cipher_label = ctk.CTkLabel(cipher_frame, text="Pilih Cipher:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 cipher_label.pack(side="top", pady=5)
 
 cipher_var = tk.StringVar()
@@ -248,7 +249,7 @@ cipher_dropdown.pack(side="top", pady=5)
 action_frame = ctk.CTkFrame(main_frame)
 action_frame.pack(pady=10, padx=10)
 
-action_label = ctk.CTkLabel(action_frame, text="Pilih Aksi:")
+action_label = ctk.CTkLabel(action_frame, text="Pilih Aksi:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 action_label.pack(side="left", padx=5)
 
 action_var = tk.StringVar()
@@ -260,7 +261,7 @@ action_dropdown.pack(side="left", padx=5)
 output_frame = ctk.CTkFrame(main_frame)
 output_frame.pack(pady=20, padx=10)
 
-output_label = ctk.CTkLabel(output_frame, text="Output Text:")
+output_label = ctk.CTkLabel(output_frame, text="Output Text:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 output_label.pack(side="top", pady=5)
 
 output_text = ctk.CTkTextbox(output_frame, width=400, height=100)
@@ -270,7 +271,7 @@ output_text.pack(side="top", pady=5)
 format_frame = ctk.CTkFrame(main_frame)
 format_frame.pack(pady=10, padx=10)
 
-format_label = ctk.CTkLabel(format_frame, text="Format Output:")
+format_label = ctk.CTkLabel(format_frame, text="Format Output:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
 format_label.pack(side="left", padx=5)
 
 format_var = tk.StringVar()
@@ -279,11 +280,11 @@ format_dropdown = ctk.CTkComboBox(format_frame, values=format_options, variable=
 format_dropdown.pack(side="left", padx=5)
 
 # Tombol enkripsi/dekripsi
-process_button = ctk.CTkButton(main_frame, text="Proses", command=lambda: process_text())
+process_button = ctk.CTkButton(main_frame, text="Proses", command=lambda: process_text(), hover_color="green")
 process_button.pack(pady=10)
 
 # Tombol simpan
-save_button = ctk.CTkButton(main_frame, text="Simpan Output", command=lambda: save_ciphertext(output_text.get("0.0", "end").strip()))
+save_button = ctk.CTkButton(main_frame, text="Simpan Output", command=lambda: save_ciphertext(output_text.get("0.0", "end").strip()), hover_color="red")
 save_button.pack(pady=10)
 
 # Fungsi untuk memproses teks
