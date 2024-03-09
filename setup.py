@@ -1,7 +1,10 @@
+# Library Eksternal 
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import string
+
+# Library Internal
 
 # Vigenere Cipher standard (26 huruf alfabet)
 def vigenere_cipher_standard(text, key, encrypt=True):
@@ -112,6 +115,8 @@ def playfair_cipher(text, key, encrypt=True):
    result = ""
    text = text.upper().replace(" ", "")
    text = "".join(["X" + c if c == text[i-1] else c for i, c in enumerate(text[1:], 2)]).replace("J", "I")
+   if len(text) % 2 == 1: # tambahkan ini
+       text += "X" # tambahkan ini
 
    for i in range(0, len(text), 2):
        char1, char2 = text[i], text[i+1]
@@ -129,11 +134,12 @@ def playfair_cipher(text, key, encrypt=True):
            else:
                new_char1, new_char2 = matrix[(row1 - 1) % 5][col1], matrix[(row2 - 1) % 5][col2]
        else:
-           new_char1, new_char2 = matrix[row1][col2], matrix[row2][col1]
+           new_cha  r1, new_char2 = matrix[col1][row2], matrix[col2][row1] # ubah ini
 
        result += new_char1 + new_char2
 
    return result
+
 
 # Super enkripsi: Vigenere Cipher standard + cipher transposisi
 def super_encryption(text, key1, key2, encrypt=True):
@@ -236,7 +242,7 @@ cipher_frame = ctk.CTkFrame(main_frame)
 cipher_frame.pack(pady=10, padx=10)
 
 cipher_label = ctk.CTkLabel(cipher_frame, text="Pilih Cipher:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
-cipher_label.pack(side="top", pady=5)
+cipher_label.pack(side="top", pady=3)
 
 cipher_var = tk.StringVar()
 cipher_options = ["Vigenere Cipher Standard", "Vigenere Cipher Variant 1", "Vigenere Cipher Variant 2",
