@@ -11,7 +11,7 @@ from classes.progress import *
 
 # GUI dengan customTkinter
 root = ctk.CTk()
-root.title("Chiper GUI")
+root.title("ChiperShipper")
 root.geometry("1080x1920")
 
 # Pengaturan tema
@@ -36,6 +36,16 @@ input_label.pack(side="top", pady=5)
 
 input_text = ctk.CTkTextbox(input_frame, width=400, height=100)
 input_text.pack(side="top", pady=5)
+
+# Frame upload file
+upload_frame = ctk.CTkFrame(input_frame)
+upload_frame.pack(pady=5)
+
+upload_label = ctk.CTkLabel(upload_frame, text="Upload File:", font=ctk.CTkFont(size=12, weight="bold", family="Consolas"))
+upload_label.pack(side="left", padx=5)
+
+upload_button = ctk.CTkButton(upload_frame, text="Browse", command=lambda: upload_file(input_text), font=ctk.CTkFont(size=12, family="Consolas"), hover_color="green")
+upload_button.pack(side="left", padx=5)
 
 # Frame kunci
 key_frame = ctk.CTkFrame(main_frame)
@@ -142,6 +152,14 @@ def process_text():
    formatted_ciphertext = format_ciphertext(ciphertext, format_choice)
    output_text.delete("0.0", "end")
    output_text.insert("0.0", formatted_ciphertext)
+
+# Fungsi untuk mengunggah file ke dalam kotak input teks
+def upload_file(input_text_widget):
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        with open(file_path, 'r') as file:
+            file_content = file.read()
+            input_text_widget.insert("0.0", file_content)
 
 
 # Windows Menjalankan GUI Python Tkinter
