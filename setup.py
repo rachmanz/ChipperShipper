@@ -8,6 +8,7 @@ import string
 from classes.chiper import *
 from classes.enc_dec import *
 from classes.progress import *
+from src.algorithm import vigenere
 
 # GUI dengan customTkinter
 root = ctk.CTk()
@@ -65,8 +66,8 @@ cipher_label = ctk.CTkLabel(cipher_frame, text="Pilih Cipher:", font=ctk.CTkFont
 cipher_label.pack(side="top", pady=3)
 
 cipher_var = tk.StringVar()
-cipher_options = ["Vigenere Cipher Standard", "Vigenere Cipher Variant 1", "Vigenere Cipher Variant 2",
-                "Vigenere Cipher Variant 3", "Extended Vigenere Cipher", "Playfair Cipher",
+cipher_options = ["Vigenere Cipher Standard", "Vigenere Cipher Full", "Vigenere Cipher Auto",
+                "Vigenere Cipher Running", "Extended Vigenere Cipher", "Playfair Cipher",
                 "Super Enkripsi"]
 cipher_dropdown = ctk.CTkComboBox(cipher_frame, values=cipher_options, variable=cipher_var)
 cipher_dropdown.pack(side="top", pady=5)
