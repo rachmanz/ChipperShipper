@@ -112,7 +112,7 @@ class CipherApp(ctk.CTk):
 
         for char in plaintext:
             if char.isalpha():
-                row = key_table[key_index % len(key)]
+                row = kecy_table[key_index % len(key)]
                 ciphertext += row[ord(char) - ord('A')]
                 key_index += 1
             else:
@@ -331,52 +331,54 @@ class CipherApp(ctk.CTk):
         return plaintext
 
     def super_enkripsi(self, plaintext, key, mode):
-        def vigenere_cipher(plaintext, key, mode):
-            ciphertext = ""
-            key_len = len(key)
+        def vigenere_cipher(text, key, mode):
+            result = ""
             key_index = 0
-            for char in plaintext:
+            for char in text:
                 if char.isalpha():
-                    char_offset = ord(char.upper()) - ord('A')
-                    key_offset = ord(key[key_index].upper()) - ord('A')
-                    if mode == "encrypt":
-                        new_offset = (char_offset + key_offset) % 26
-                    else:
-                        new_offset = (char_offset - key_offset) % 26
-                    new_char = chr(new_offset + ord('A'))
-                    if char.islower():
-                        new_char = new_char.lower()
-                    ciphertext += new_char
-                    key_index = (key_index + 1) % key_len
+                    key_char = key[key_index % len(key)]
+                    key_offset = ord(key_char.upper()) - ord('A')
+                    if char.isupper():
+                        char_offset = ord(char) - ord('A')
+                        new_offset = (char_offset + key_offset) % 26 if mode == "encrypt" else (char_offset - key_offset) % 26
+                        result += chr(new_offset + ord('A'))
+                    elif char.islower():
+                        char_offset = ord(char) - ord('a')
+                        new_offset = (char_offset + key_offset) % 26 if mode == "encrypt" else (char_offset - key_offset) % 26
+                        result += chr(new_offset + ord('a'))
+                    key_index += 1
                 else:
-                    ciphertext += char
-            return ciphertext
+                    result += char
+            return result
 
-        def transpose_cipher(plaintext, mode):
-            ciphertext = ""
-            rows = len(plaintext) // 5 + 1
+        def transpose_cipher(text, mode):
+            result = ""
+            rows = len(text) // 5 + 1
             cols = 5
             if mode == "encrypt":
                 for col in range(cols):
                     for row in range(rows):
                         index = row * cols + col
-                        if index < len(plaintext):
-                            ciphertext += plaintext[index]
-            else:
+                        if index < len(text):
+                            result += text[index]
+            elif mode == "decrypt":
                 for row in range(rows):
                     for col in range(cols):
-                        index = row * cols + col
-                        if index < len(plaintext):
-                            ciphertext += plaintext[index]
-            return ciphertext
+                        index = row + col * rows
+                        if index < len(text):
+                            result += text[index]
+            return result
 
         if mode == "encrypt":
             step1 = vigenere_cipher(plaintext, key, "encrypt")
             ciphertext = transpose_cipher(step1, "encrypt")
-        else:
+        elif mode == "decrypt":
             step1 = transpose_cipher(plaintext, "decrypt")
             ciphertext = vigenere_cipher(step1, key, "decrypt")
+        else:
+            raise ValueError("Mode harus 'encrypt' atau 'decrypt'")
         return ciphertext
+
 
     def encrypt(self):
         plaintext = self.plaintext_entry.get()

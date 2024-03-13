@@ -1,13 +1,81 @@
 import string
 import binascii
-from src.algorithm import general
-from src.algorithm import const
-from src.algorithm import vigenere
+
+
+# Constrains
+ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
+LETTER = 97
+CAPITAL = 65
+SENTINEL = 224
+TRANSPOSEKEY = 4
+LENGTHALPHABET = 26
+
+##################################################
+
+import re
+# use this to remove duplicate character from text preserving the order.
+# Example: remove_duplicate_char('testacoba') -> tesacob 
+def remove_duplicate_char(text):
+    return "".join(dict.fromkeys(text))
+
+# use this to remove character from text.
+# Example: remove_char('test', 't') -> es 
+def remove_char(text, char):
+    return text.replace(char, '')
+
+# sanitize will remove space, number, and puctuation from given text
+def sanitize(text):
+    return re.sub('[^A-Za-z]+', '', text)
+
+# use this to replace a character with another character.
+# Example: replace_char('test', 't', 'b') -> besb 
+def replace_char(text, old_char, new_char):
+    return text.replace(old_char, new_char)
+
+# return order of given character in alphabetical rank, start from 0
+# Example: char_to_order('a') -> 0, char_to_order('k') -> 10
+def char_to_order(char):
+    return ord(char.lower()) - ord('a')
+
+# return lowercase character of given order in alphabetical rank, start from 0
+# Example: order_to_char('0') -> a, order_to_char('10') -> k, order_to_char('26') -> a
+def order_to_char(order):
+    while order >= 26:
+        order -= 26
+    
+    while order < 0:
+        order += 26
+
+    return chr(order + ord('a'))    
+
+# create square matrix with given length from given array. 
+# Matrix will be filled with priority from left to right then top to bottom.
+def create_square(arr, length):
+    rows, cols = (length, length) 
+    square = [] 
+    idx = 0
+    for i in range(cols): 
+        col = [] 
+        for j in range(rows): 
+            col.append(arr[idx])
+            idx += 1 
+        square.append(col)
+    return square
+
+# X that satisfy aX = 1 mod m
+def mod_inverse(a, m) : 
+    a = a % m; 
+    for x in range(1, m) : 
+        if ((a * x) % m == 1) : 
+            return x 
+    return 1
+
+##################################################################
 
 # Vigenere Cipher Standar (OK)
 def vigenere_cipher_standard(text, key, encrypt=True):
     result = ""
-    key_len = len(key)
+    key_len = len(key)  
     key_idx = 0
     for char in text:
         if char.isalpha():
@@ -27,70 +95,69 @@ def vigenere_cipher_standard(text, key, encrypt=True):
 
 ######################################################################
 
-# Variasi Vigenere Full
+# Variasi Vigenere Full (OK)
 def vigenere_cipher_variant1(text, key, encrypt=True):
-    matrices_sollution =[
-            ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'],    
-            ['t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o'],#a
-            ['b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t'],#b
-            ['g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b'],#c
-            ['u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g'],#d
-            ['k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u'],#e
-            ['f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k'],#f
-            ['c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f'],#g
-            ['r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c'],#h
-            ['w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r'],#i
-            ['j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w'],#j
-            ['e','l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j'],#k
-            ['l','p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e'],#l
-            ['p','n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l'],#m
-            ['n','z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p'],#n
-            ['z','m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n'],#o
-            ['m','q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z'],#p
-            ['q','h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m'],#q
-            ['h','s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q'],#r
-            ['s','a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h'],#s
-            ['a','d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s'],#t
-            ['d','v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a'],#u
-            ['v','i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d'],#v
-            ['i','x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v'],#w
-            ['x','y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i'],#x
-            ['y','o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x'],#y
-            ['o','t','b','g','u','k','f','c','r','w','j','e','l','p','n','z','m','q','h','s','a','d','v','i','x','y']]#z 
+    matrices_sollution = [
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+        ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a'],
+        ['c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b'],
+        ['d', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c'],
+        ['e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd'],
+        ['f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e'],
+        ['g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f'],
+        ['h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g'],
+        ['i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+        ['j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
+        ['k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
+        ['l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'],
+        ['m', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
+        ['n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
+        ['o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'],
+        ['p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'],
+        ['q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'],
+        ['r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q'],
+        ['s', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r'],
+        ['t', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's'],
+        ['u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't'],
+        ['v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u'],
+        ['w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v'],
+        ['x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w'],
+        ['y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x'],
+        ['z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y']]
 
     def preprocess(text, key):
         # Preprocess text
         text = text.lower()
-        text = general.sanitize(text)
-        text = [(ord(i) - const.LETTER) for i in text]
+        text = sanitize(text)
+        text = [(ord(i) - LETTER) for i in text]
 
         # Preprocess key
         key = key.lower()
-        key = general.sanitize(key)
-        key = [(ord(i) - const.LETTER) for i in key]
+        key = sanitize(key)
+        key = [(ord(i) - LETTER) for i in key]
 
         return text, key
 
-    def encrypt_text(text, key, matrices_solution):
+    def encrypt_text(text, key, matrices_sollution):
         ciphertext = ''
         idx = 0
         for char in text:
             if idx >= len(key):
                 idx = 0
-            ciphertext += matrices_solution[char][key[idx]]
+            ciphertext += matrices_sollution[char][key[idx]]
             idx += 1
 
         return ciphertext
 
-    def decrypt_text(text, key, matrices_solution):
+    def decrypt_text(text, key, matrices_sollution):
         plaintext = ''
         idx = 0
         for char in text:
             if idx >= len(key):
                 idx = 0
 
-            element = chr(char + const.LETTER)
-            plaintext += chr(matrices_solution[key[idx]].index(element) + const.LETTER)
+            element = chr(char + LETTER)
+            plaintext += chr(matrices_sollution[key[idx]].index(element) + LETTER)
             idx += 1
 
         return plaintext
@@ -98,10 +165,11 @@ def vigenere_cipher_variant1(text, key, encrypt=True):
     text, key = preprocess(text, key)
 
     if encrypt:
-        return encrypt_text(text, key, matrices_solution)
+        return encrypt_text(text, key, matrices_sollution)
     else:
-        return decrypt_text(text, key, matrices_solution)
+        return decrypt_text(text, key, matrices_sollution)
 ################################################################
+
 # Variasi Vigenere Auto Key (OK)
 def vigenere_cipher_variant2(text, key, encrypt=True):
     result = ""
@@ -299,75 +367,60 @@ def playfair_cipher(text, key, encrypt=True):
 
 # Super enkripsi: Vigenere Cipher standard + cipher transposisi
 
-def split_len(seq, length):
-    matrices = [seq[i:i + length] for i in range(0, len(seq), length)]
-    nRow = math.ceil(len(seq)/length)
-    lengthLastRow = len(matrices[nRow-1])
-    if lengthLastRow != length:
-        for i in range(0, (length-lengthLastRow)):
-            matrices[nRow-1].append(const.SENTINEL)
-    return matrices
-
 def super_encryption(text, key1, key2, encrypt=True):
-    def preprocess(text, key):
-        # Preprocess text
-        text = text.lower()
-        text = general.sanitize(text)
-        text = [(ord(i) - const.LETTER) for i in text]
+    # Enkripsi/Dekripsi Vigenere Cipher
+    ciphertext = vigenere_cipher_variant1(text, key1, encrypt)
 
-        # Preprocess key
-        key = key.lower()
-        key = general.sanitize(key)
-        key = [(ord(i) - const.LETTER) for i in key]
-
-        return text, key
-
-    def encrypt_text(text, key1, key2):
-        # Encrypt phase 1: Vigenere Cipher
-        vig = vigenere_cipher(text, key1, encrypt=True)
-        ord_vig = [(ord(i) - const.LETTER) for i in vig]
-
-        # Encrypt phase 2: Transposition Cipher
-        matrices = split_len(ord_vig, const.TRANSPOSEKEY)
-        transpose = np.transpose(matrices)
-        ciphertext = ''
-        for row in transpose:
-            for col in row:
-                if col != const.SENTINEL:
-                    ciphertext += general.order_to_char(col)
-                else:
-                    ciphertext += chr(col)
-
-        return ciphertext
-
-    def decrypt_text(text, key1, key2):
-        # Decrypt phase 1: Transposition Cipher
-        text = []
-        for char in text:
-            if char != chr(const.SENTINEL):
-                text.append(ord(char) - const.LETTER)
-            else:
-                text.append(const.SENTINEL)
-
-        nRow = int(len(text) / const.TRANSPOSEKEY)
-        matrices = split_len(text, nRow)
-        transpose = np.transpose(matrices)
-        ciphertext = ''
-        for row in transpose:
-            for col in row:
-                if col != const.SENTINEL:
-                    ciphertext += general.order_to_char(col)
-
-        ciphertext = [(ord(char) - const.LETTER) for char in ciphertext]
-
-        # Decrypt phase 2: Vigenere Cipher
-        plaintext = vigenere_cipher(ciphertext, key1, encrypt=False)
-
-        return plaintext
-
-    text, key1 = preprocess(text, key1)
-
+    # Enkripsi/Dekripsi Transposisi
     if encrypt:
-        return encrypt_text(text, key1, key2)
+        return encrypt_transposition(ciphertext, key2)
     else:
-        return decrypt_text(text, key1, key2)
+        return decrypt_transposition(ciphertext, key2)
+
+def encrypt_transposition(text, key):
+    """Mengenkripsi teks dengan transposisi kunci."""
+    key = list(map(int, key))  # Mengubah kunci menjadi list of int
+    rows = len(set(key))  # Jumlah baris adalah jumlah angka unik dalam kunci
+    cols = (len(text) + rows - 1) // rows
+    table = [[] for _ in range(rows)]
+
+    # Mengisi tabel
+    idx = 0
+    for col in range(cols):
+        for row in range(rows):
+            if idx >= len(text):
+                break
+            table[row].append(text[idx])
+            idx += 1
+
+    # Membaca tabel berdasarkan kunci
+    ciphertext = ''
+    for k in sorted(set(key)):
+        for i in range(cols):
+            if i < len(table[key.index(k)]):
+                ciphertext += table[key.index(k)][i]
+
+    return ciphertext
+
+def decrypt_transposition(text, key):
+    """Mendekripsi teks dengan transposisi kunci."""
+    key = list(map(int, key))  # Mengubah kunci menjadi list of int
+    rows = len(set(key))  # Jumlah baris adalah jumlah angka unik dalam kunci
+    cols = (len(text) + rows - 1) // rows
+    table = [[] for _ in range(rows)]
+
+    # Mengisi tabel
+    idx = 0
+    for k in sorted(set(key)):
+        for i in range(cols):
+            if idx >= len(text):
+                break
+            table[key.index(k)].append(text[idx])
+            idx += 1
+
+    # Membaca tabel secara normal
+    plaintext = ''
+    for row in table:
+        plaintext += ''.join(row)
+
+    return plaintext

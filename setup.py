@@ -4,11 +4,11 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import string
 
-# Library Internal
+# Library Internal  
 from classes.chiper import *
 from classes.enc_dec import *
 from classes.progress import *
-from src.algorithm import vigenere
+# from src.algorithm import vigenere
 
 # GUI dengan customTkinter
 root = ctk.CTk()
@@ -114,6 +114,12 @@ process_button.pack(pady=10)
 save_button = ctk.CTkButton(main_frame, text="Simpan Output", command=lambda: save_ciphertext(output_text.get("0.0", "end").strip()), hover_color="red")
 save_button.pack(pady=10)
 
+# Mendapatkan kunci transposisi dari super Encrypt
+def get_transposition_key():
+    key2 = ctk.CTkInputDialog(text="Masukkan kunci transposisi (angka tanpa spasi):", title="Kunci Transposisi").get_input()
+    return key2
+
+
 # Fungsi untuk memproses teks
 def process_text():
    plaintext = input_text.get("0.0", "end").strip()
@@ -124,28 +130,28 @@ def process_text():
 
    if cipher_choice == "Vigenere Cipher Standard":
        cipher_func = vigenere_cipher_standard
-   elif cipher_choice == "Vigenere Cipher Variant 1":
+   elif cipher_choice == "Vigenere Cipher Full":
        cipher_func = vigenere_cipher_variant1
-   elif cipher_choice == "Vigenere Cipher Variant 2":
+   elif cipher_choice == "Vigenere Cipher Auto":
        cipher_func = vigenere_cipher_variant2
-   elif cipher_choice == "Vigenere Cipher Variant 3":
+   elif cipher_choice == "Vigenere Cipher Running":
        cipher_func = vigenere_cipher_variant3
    elif cipher_choice == "Extended Vigenere Cipher":
        cipher_func = extended_vigenere_cipher
    elif cipher_choice == "Playfair Cipher":
        cipher_func = playfair_cipher
-   elif cipher_choice == "Super Enkripsi":
+   elif cipher_choice == "Super Enkripsi":  
        cipher_func = super_encryption
 
    if action_choice == "enkripsi":
-       if cipher_choice == "Super Enkripsi":
-           key2 = input("Masukkan kunci transposisi (angka tanpa spasi): ")
+       if cipher_choice == "Super Enkripsi":    
+           key2 = get_transposition_key()
            ciphertext = cipher_func(plaintext, key, key2, encrypt=True)
        else:
            ciphertext = cipher_func(plaintext, key, encrypt=True)
    else:
        if cipher_choice == "Super Enkripsi":
-           key2 = input("Masukkan kunci transposisi (angka tanpa spasi): ")
+           key2 = get_transposition_key()
            ciphertext = cipher_func(plaintext, key, key2, encrypt=False)
        else:
            ciphertext = cipher_func(plaintext, key, encrypt=False)
