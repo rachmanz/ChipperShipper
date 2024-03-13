@@ -1,3 +1,5 @@
+![ChipperShipper Images](/asset/logos.jpg)
+
 # ChipperShipper
 
 Project based on Chippering File (Alpha Development) and still more improvement from algoritm in classroom
