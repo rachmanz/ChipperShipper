@@ -8,4 +8,8 @@ To start this project file, firstly you can start the requirement on this projec
 pip install -r requirements.txt
 ```
 
-You can run this project under the CodeRunner or by Command Line `"python setup.py"`
+You can run this project under the CodeRunner or by Command Line
+
+```txt
+python setup.py
+```
